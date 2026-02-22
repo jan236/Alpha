@@ -1,4 +1,4 @@
-# Portfolio Project – Alpha
+﻿# Portfolio Project – Alpha
 
 ## Overview
 This Project uses 2 or 3 APIs to get data from. The data is processed to show statistics, diagrams and a history 
@@ -19,11 +19,15 @@ of some data. This project has the purpose to show my tech skills.
 ## 1. Architecture
 Brief description or diagram: How do the frontend, backend, database and external APIs communicate?
 
+### UI
+
+one UI for each Api data - to keep it structured
+
 Soon to come
 
 ## 2. APIs
 External APIs used – free tier, watch out for rate limits:
-- OpenWeatherMap (1,000 calls/day free)
+- Brightsky (weather data from DWD)
 - NewsAPI (dev tier free)
 - ExchangeRate-API
 - The Movie DB

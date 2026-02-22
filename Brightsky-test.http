@@ -1,0 +1,9 @@
+﻿### Aktuelles Wetter in Berlin
+GET https://api.brightsky.dev/current_weather?lat=52.52&lon=13.41
+
+### Wetterverlauf letzte 7 Tage
+GET https://api.brightsky.dev/weather?lat=52.52&lon=13.41&date=2026-02-15&last_date=2026-02-22
+
+### Wetterradar
+
+GET https://api.brightsky.dev/radar
