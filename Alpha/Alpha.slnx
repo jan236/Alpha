@@ -1,0 +1,23 @@
+<Solution>
+    <Configurations>
+        <Platform Name="Any CPU" />
+    </Configurations>
+    <Folder Name="/src/">
+        <Project Path="src/Alpha.Domain/Alpha.Domain.csproj" />
+        <Project Path="src/Alpha.Application/Alpha.Application.csproj" />
+        <Project Path="src/Alpha.EntityFrameworkCore/Alpha.EntityFrameworkCore.csproj" />
+        <Project Path="src/Alpha.Domain.Shared/Alpha.Domain.Shared.csproj" />
+        <Project Path="src/Alpha.Application.Contracts/Alpha.Application.Contracts.csproj" />
+        <Project Path="src/Alpha.HttpApi/Alpha.HttpApi.csproj" />
+        <Project Path="src/Alpha.HttpApi.Client/Alpha.HttpApi.Client.csproj" />
+        <Project Path="src/Alpha.DbMigrator/Alpha.DbMigrator.csproj" />
+        <Project Path="src/Alpha.Blazor/Alpha.Blazor.csproj" />
+    </Folder>
+    <Folder Name="/test/">
+        <Project Path="test/Alpha.Application.Tests/Alpha.Application.Tests.csproj" />
+        <Project Path="test/Alpha.EntityFrameworkCore.Tests/Alpha.EntityFrameworkCore.Tests.csproj" />
+        <Project Path="test/Alpha.TestBase/Alpha.TestBase.csproj" />
+        <Project Path="test/Alpha.Domain.Tests/Alpha.Domain.Tests.csproj" />
+        <Project Path="test/Alpha.HttpApi.Client.ConsoleTestApp/Alpha.HttpApi.Client.ConsoleTestApp.csproj" />
+    </Folder>
+</Solution>
