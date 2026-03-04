@@ -1,4 +1,5 @@
 ﻿@using System.Globalization
+@using Radzen
 @using Microsoft.Extensions.Hosting
 @using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling
 @using Volo.Abp.Localization
@@ -21,7 +22,7 @@
     <link href="Alpha.Blazor.styles.css" rel="stylesheet"/>
 
     <HeadOutlet @rendermode="InteractiveServer" />
-
+      <RadzenTheme Theme="material" /> 
     
 </head>
 <body class="abp-application-layout @rtl">
@@ -44,6 +45,6 @@
     <AbpScripts BundleName="@BlazorLeptonXLiteThemeBundles.Scripts.Global" />
 
     <script src="_framework/blazor.web.js"></script>
-
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
 </body>
 </html>

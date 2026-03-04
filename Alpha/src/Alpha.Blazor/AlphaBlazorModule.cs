@@ -1,57 +1,59 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
+﻿using Alpha.Blazor.Components;
+using Alpha.Blazor.HealthChecks;
+using Alpha.Blazor.Menus;
+using Alpha.BrightSky;
+using Alpha.EntityFrameworkCore;
+using Alpha.Localization;
+using Alpha.MultiTenancy;
+using Alpha.Nominatim;
 using Blazorise;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Extensions.DependencyInjection;
-using OpenIddict.Validation.AspNetCore;
-using OpenIddict.Server.AspNetCore;
 using Microsoft.Extensions.Options;
-using Alpha.Blazor.Components;
-using Alpha.Blazor.Menus;
-using Alpha.EntityFrameworkCore;
-using Alpha.Localization;
-using Alpha.MultiTenancy;
 using Microsoft.OpenApi;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
+using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using Volo.Abp;
-using Volo.Abp.Studio;
 using Volo.Abp.Account.Web;
+using Volo.Abp.AspNetCore.Components.Server;
+using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme;
+using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling;
 using Volo.Abp.AspNetCore.Components.Web;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.AspNetCore.Mvc;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Bundling;
-using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
-using Volo.Abp.AspNetCore.Serilog;
-using Volo.Abp.AspNetCore.Components.Server;
-using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme;
-using Volo.Abp.AspNetCore.Components.Server.LeptonXLiteTheme.Bundling;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.LeptonXLite.Bundling;
-using Volo.Abp.Identity;
+using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
+using Volo.Abp.AspNetCore.Serilog;
 using Volo.Abp.Autofac;
-using Volo.Abp.Mapperly;
-using Alpha.Blazor.HealthChecks;
-using Volo.Abp.Identity.Blazor.Server;
-using Volo.Abp.SettingManagement.Blazor.Server;
 using Volo.Abp.FeatureManagement.Blazor.Server;
-using Volo.Abp.Security.Claims;
+using Volo.Abp.Identity;
+using Volo.Abp.Identity.Blazor.Server;
 using Volo.Abp.Localization;
+using Volo.Abp.Mapperly;
 using Volo.Abp.Modularity;
 using Volo.Abp.OpenIddict;
+using Volo.Abp.Security.Claims;
+using Volo.Abp.SettingManagement.Blazor.Server;
+using Volo.Abp.Studio;
+using Volo.Abp.Studio.Client.AspNetCore;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
-using Volo.Abp.Studio.Client.AspNetCore;
 
 namespace Alpha.Blazor;
 
@@ -140,7 +142,7 @@ public class AlphaBlazorModule : AbpModule
             {
                 options.DisableTransportSecurityRequirement = true;
             });
-            
+
             Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedProto;
@@ -160,6 +162,32 @@ public class AlphaBlazorModule : AbpModule
         ConfigureBlazorise(context);
         ConfigureRouter(context);
         ConfigureMenu(context);
+
+
+        context.Services.Configure<BrightSkySettings>(
+    configuration.GetSection("BrightSkySettings"));
+
+        context.Services.Configure<NominatimSettings>(
+            configuration.GetSection("NominatimSettings"));
+
+        var settings = context.Services.GetConfiguration()
+    .GetSection("BrightSkySettings")
+    .Get<BrightSkySettings>();
+
+        context.Services.AddHttpClient<IBrightSkyClient, BrightSkyClient>(client =>
+        {
+            client.BaseAddress = settings!.BaseUrl;
+        });
+
+        var nominatimSettings = context.Services.GetConfiguration()
+            .GetSection("NominatimSettings")
+            .Get<NominatimSettings>();
+
+        context.Services.AddHttpClient<INominatimClient, NominatimClient>(client =>
+        {
+            client.BaseAddress = nominatimSettings!.BaseUrl;
+        });
+
     }
 
     private void ConfigureStudio(IHostEnvironment hostingEnvironment)
@@ -172,7 +200,7 @@ public class AlphaBlazorModule : AbpModule
             });
         }
     }
-    
+
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
@@ -279,7 +307,7 @@ public class AlphaBlazorModule : AbpModule
             options.MenuContributors.Add(new AlphaMenuContributor());
         });
     }
-    
+
 
     private void ConfigureRouter(ServiceConfigurationContext context)
     {

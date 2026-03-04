@@ -1,0 +1,70 @@
+﻿@page "/weatherDashboard"
+@namespace Alpha.Blazor.Components.Pages
+@using Alpha.Nominatim
+@using Radzen
+@using Radzen.Blazor
+
+<RadzenStack Orientation="@Radzen.Orientation.Vertical" Gap="1rem" Style="padding: 2rem;">
+
+    <RadzenText TextStyle="TextStyle.H4">Aktuelles Wetter</RadzenText>
+
+    <RadzenStack Orientation="@Radzen.Orientation.Horizontal" Gap="0.5rem" AlignItems="@Radzen.AlignItems.Center">
+        <RadzenTextBox Placeholder="Stadt eingeben..."
+                       Value="@_searchQuery"
+                       ValueChanged="@OnSearchInput"
+                       Style="width: 300px;" />
+        @if (_isLoadingLocations)
+        {
+            <RadzenProgressBarCircular ShowValue="false" Size="ProgressBarCircularSize.Small" />
+        }
+    </RadzenStack>
+
+    @if (_locationSuggestions.Any())
+    {
+        <RadzenListBox TValue="NominatimLocationDto"
+                       Data="@_locationSuggestions"
+                       TextProperty="DisplayName"
+                       Style="width: 300px; max-height: 200px;"
+                       ValueChanged="@((NominatimLocationDto loc) => OnLocationSelected(loc))" />
+    }
+
+    @if (_isLoadingWeather)
+    {
+        <RadzenProgressBarCircular ShowValue="false" />
+    }
+
+    @if (_currentWeather != null && !_isLoadingWeather)
+    {
+        <RadzenCard Style="width: 400px;">
+            <RadzenStack Orientation="@Radzen.Orientation.Vertical" Gap="0.5rem">
+
+                <RadzenText TextStyle="TextStyle.H5">
+                    @_currentWeather.Sources.FirstOrDefault()?.StationName
+                </RadzenText>
+                <RadzenText TextStyle="TextStyle.Subtitle2">
+                    @_currentWeather.Weather.Timestamp.ToString("dd.MM.yyyy HH:mm")
+                </RadzenText>
+
+                <RadzenStack Orientation="@Radzen.Orientation.Horizontal" Gap="2rem">
+                    <img src="@GetWeatherIconUrl(_currentWeather.Weather.Icon)" width="96" height="96" />
+                    <RadzenStack>
+                        <RadzenText>🌡️ @_currentWeather.Weather.Temperature °C</RadzenText>
+                        <RadzenText>💧 @_currentWeather.Weather.RelativeHumidity %</RadzenText>
+                        <RadzenText>☁️ @_currentWeather.Weather.CloudCover %</RadzenText>
+                        <RadzenText>👁️ @_currentWeather.Weather.Visibility m</RadzenText>
+                    </RadzenStack>
+                    <RadzenStack>
+                        <RadzenText>🌬️ @_currentWeather.Weather.WindSpeed10 km/h</RadzenText>
+                        <RadzenText>💨 @_currentWeather.Weather.WindGustSpeed10 km/h</RadzenText>
+                        <RadzenText>🧭 @_currentWeather.Weather.WindDirection10 °</RadzenText>
+                        <RadzenText>🌧️ @_currentWeather.Weather.Precipitation10 mm</RadzenText>
+                    </RadzenStack>
+                </RadzenStack>
+
+                <RadzenBadge Text="@_currentWeather.Weather.Condition" />
+
+            </RadzenStack>
+        </RadzenCard>
+    }
+
+</RadzenStack>
